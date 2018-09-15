@@ -1,11 +1,12 @@
-import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 import * as React from 'react';
-import Dropzone from 'react-dropzone'
 import './App.css';
-import {ThemeContext, themes} from './theme-context';
+import {themes} from './theme-context';
+
+
 interface IState {
   imageFiles: any[],
   results: any,
@@ -76,40 +77,14 @@ export default class App extends React.Component<{}, IState> {
   
   public render() {
     return (
-      <div className="container-fluid">
-      <ThemeContext.Provider value={this.state}>
-        <ThemeContext.Consumer>
-          {theme => (
-            <div className="centreText" style={{backgroundColor: theme.theme.background, color: theme.theme.foreground}}>
-              <div className="dropZone">
-                <Dropzone onDrop={this.state.dropzone} style={{position: "relative"}}>
-                  <div style={{height: '50vh'}}>
-                    {
-                      this.state.imageFiles.length > 0 ? 
-                        <div>{this.state.imageFiles.map((file) => <img className="image" key={file.name} src={file.preview} /> )}</div> :
-                        <p>Try dropping some files here, or click to select files to upload.</p>
-                    }  
-                  </div>
-                </Dropzone>
-              </div>
-              <div  className="dank">
-              {
-                this.state.results === "" && this.state.imageFiles.length > 0 ?
-                <CircularProgress thickness={3} /> :
-                <p>{this.state.results}</p>
-              }
-              </div>
-            </div>
-            )}
-          </ThemeContext.Consumer>
-            <div>
-            <List >
-              <ListItem key={'testing 1 2 3'}>
-                <ListItemText primary={'item other'}/>
-              </ListItem>
-            </List>
+      <div className="container-fluid" >
+            <div className="testing">
+              <FormControl aria-describedby="name-helper-text" margin={"normal"} >
+              <InputLabel className="textfield" >Subreddit name</InputLabel>
+              <Input/>
+              <FormHelperText className="helping">Helper test</FormHelperText>
+              </FormControl>
           </div>
-        </ThemeContext.Provider>
       </div>
     );
   }
