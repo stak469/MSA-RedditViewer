@@ -4,9 +4,9 @@ ENV NPM_CONFIG_LOGLEVEL warn
 ARG app_env
 ENV APP_ENV $app_env
 
-RUN mkdir -p /my-app
-WORKDIR /my-app
-COPY ./my-app ./
+RUN mkdir -p /my-reddit
+WORKDIR /my-reddit
+COPY ./my-reddit ./
 
 RUN npm install
 
