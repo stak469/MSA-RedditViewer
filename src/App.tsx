@@ -1,18 +1,19 @@
+import { Button } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import * as React from 'react';
 import './App.css';
-import {themes} from './theme-context';
 
 
 interface IState {
-  imageFiles: any[],
   results: any,
-  dropzone: any,
-  theme: any,
-  toggleTheme: any
+  subreddit: any,
+  name: any,
+  hits: any,
+  container: any,
+  responseJSON: any,
 }
 
 export default class App extends React.Component<{}, IState> {
@@ -21,71 +22,78 @@ export default class App extends React.Component<{}, IState> {
     super(props);
   
     this.state = {
-      imageFiles: [],
       results: "",
-      dropzone: this.onDrop.bind(this),
-  
-      theme: themes.dark,
-      toggleTheme: this.toggleTheme(),
+
+      name: "",
+      subreddit: "",
+      hits: [],
+      container: "",
+      responseJSON: "",
+
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.getInputReddit = this.getInputReddit.bind(this)
+    this.fetchsubreddit = this.fetchsubreddit.bind(this)
+    this.displayResults = this.displayResults.bind(this)
   }
 
-  public toggleTheme = () => {
-    this.setState(state => ({
-      theme:
-        state.theme === themes.light
-          ? themes.dark
-          : themes.light,
-    }));
+  public handleChange = (e: any): void => {
+    this.setState({
+      subreddit: e.currentTarget.value
+    });
   };
 
-  public onDrop(files: any) {
-    this.setState({
-      imageFiles: files,
-      results: ""
-    })
-    const file = files[0]
-    const reader = new FileReader();
-    reader.onload = (readerEvt) => {
-        const binaryString = readerEvt.target!!.result;
-        this.upload(btoa(binaryString))
-    };
-
-    reader.readAsBinaryString(file);
-  }
-
-  public upload(base64String: string) {
-    fetch('https://danktrigger.azurewebsites.net/api/dank', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: JSON.stringify({
-        file: base64String,
-      })
-    })
-    .then((response : any) => {
-      if (!response.ok) {
-        this.setState({results: response.statusText})
-      }
-      else {
-        response.json().then((data:any) => this.setState({results: data[0].class}))
-      }
-      return response
-    })
-  }
   
+  public getInputReddit() {
+    if(this.state.subreddit!==null){
+            // tslint:disable-next-line:no-console 
+      console.log("hi");
+      this.fetchsubreddit(this.state.subreddit)
+      
+    }
+    
+  };
+  
+  public fetchsubreddit= async (subreddit: string) => {
+    const response = await fetch('https://www.reddit.com/r/' + subreddit + '.json?sort=top')
+    // tslint:disable-next-line:no-console 
+    console.log("fetched");
+    const responseJSON = await response.json()
+    this.displayResults(responseJSON)
+  };
+
+
   public render() {
     return (
       <div className="container-fluid" >
-            <div className="testing">
+            <div className="subredditField">
               <FormControl aria-describedby="name-helper-text" margin={"normal"} >
               <InputLabel className="textfield" >Subreddit name</InputLabel>
-              <Input/>
-              <FormHelperText className="helping">Helper test</FormHelperText>
+              <Input id="subredditName" onChange={this.handleChange} />
+              <FormHelperText className="helping">helper</FormHelperText>
+              <Button onClick={this.getInputReddit}>Submit</Button>
               </FormControl>
+              <div id="results">Top results of all time.</div>
           </div>
       </div>
     );
   }
+
+  public displayResults(responseJSON: any){
+
+    const container = document.getElementById('results')
+                        // tslint:disable-next-line:no-console 
+                        console.log("child card "+ responseJSON.kind);
+
+    for(let i=0;i<25;i++){
+      const postCard = document.createElement('a')
+      postCard.href = `https://www.reddit.com` + responseJSON.data.children[i].data.permalink
+      postCard.classList.add('post-Card')
+      postCard.innerText = `` + responseJSON.data.children[i].data.title
+      if(container !==null){
+        container.appendChild(postCard);
+      }
+    }
+  }
+
 }

@@ -8,9 +8,9 @@ export const Header: React.StatelessComponent<{}> = () => {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="display3" color="inherit">
-                        <Link style={{color: "white"}} to="/">dankNotDank</Link>
-                        <Link to="/FirstComponent"> Page 1 </Link>
-                        <Link to="/SecondComponent"> Page 2 </Link>
+                        <Link style={{color: "white"}} to="/">Top</Link>
+                        <Link to="/FirstComponent"> New </Link>
+                        <Link to="/SecondComponent"> Controversial </Link>
                     </Typography>
                 </Toolbar>
             </AppBar>
