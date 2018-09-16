@@ -1,6 +1,5 @@
 import { Button } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import * as React from 'react';
@@ -11,7 +10,6 @@ interface IState {
   results: any,
   subreddit: any,
   name: any,
-  hits: any,
   container: any,
   responseJSON: any,
 }
@@ -23,10 +21,8 @@ export default class App extends React.Component<{}, IState> {
   
     this.state = {
       results: "",
-
       name: "",
       subreddit: "",
-      hits: [],
       container: "",
       responseJSON: "",
 
@@ -37,27 +33,25 @@ export default class App extends React.Component<{}, IState> {
     this.displayResults = this.displayResults.bind(this)
   }
 
+  // Stores the value of what is in the input field into the 'subreddit' field.
   public handleChange = (e: any): void => {
     this.setState({
       subreddit: e.currentTarget.value
     });
   };
 
-  
+  // Checks if there is any text in the field, if there is it passes it onto the fetchsubreddit method.
+  // This prevents it from sending null to the fetchsubreddit method.
   public getInputReddit() {
     if(this.state.subreddit!==null){
-            // tslint:disable-next-line:no-console 
-      console.log("hi");
       this.fetchsubreddit(this.state.subreddit)
-      
     }
-    
   };
   
+  // Fetches the JSON data from the reddit API and passes it on to the displayResults method.
+  // This is a basic search so no API key is required.
   public fetchsubreddit= async (subreddit: string) => {
-    const response = await fetch('https://www.reddit.com/r/' + subreddit + '.json?sort=top')
-    // tslint:disable-next-line:no-console 
-    console.log("fetched");
+    const response = await fetch('https://www.reddit.com/r/' + subreddit + '/top.json')
     const responseJSON = await response.json()
     this.displayResults(responseJSON)
   };
@@ -67,10 +61,9 @@ export default class App extends React.Component<{}, IState> {
     return (
       <div className="container-fluid" >
             <div className="subredditField">
-              <FormControl aria-describedby="name-helper-text" margin={"normal"} >
+              <FormControl margin={"normal"} >
               <InputLabel className="textfield" >Subreddit name</InputLabel>
               <Input id="subredditName" onChange={this.handleChange} />
-              <FormHelperText className="helping">helper</FormHelperText>
               <Button onClick={this.getInputReddit}>Submit</Button>
               </FormControl>
               <div id="results">Top results of all time.</div>
@@ -79,12 +72,16 @@ export default class App extends React.Component<{}, IState> {
     );
   }
 
+  // Displays the results recieved from the reddit API into a human readable format. The user
+  // Is able to view the title and is able to click on it to go to the actual page.
+  // It is also placed lower than render() to ensure that the page fully loads as
+  // An existing container is used in this method.
   public displayResults(responseJSON: any){
 
     const container = document.getElementById('results')
-                        // tslint:disable-next-line:no-console 
-                        console.log("child card "+ responseJSON.kind);
-
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+  }
     for(let i=0;i<25;i++){
       const postCard = document.createElement('a')
       postCard.href = `https://www.reddit.com` + responseJSON.data.children[i].data.permalink

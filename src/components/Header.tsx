@@ -7,10 +7,10 @@ export const Header: React.StatelessComponent<{}> = () => {
     return (
             <AppBar position="static">
                 <Toolbar>
-                    <Typography variant="display3" color="inherit">
-                        <Link style={{color: "white"}} to="/">Top</Link>
-                        <Link to="/FirstComponent"> New </Link>
-                        <Link to="/SecondComponent"> Controversial </Link>
+                    <Typography variant="display3" color="primary">
+                        <Link style={{color: "white"}} to="/">Top   </Link>
+                        <Link style={{color: "white"}} to="/FirstComponent">New    </Link>
+                        <Link style={{color: "white"}} to="/SecondComponent">Controversial    </Link>
                     </Typography>
                 </Toolbar>
             </AppBar>

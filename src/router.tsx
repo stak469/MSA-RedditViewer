@@ -20,6 +20,5 @@ export const AppRouter: React.StatelessComponent<{}> = () => {
                 </main>
             </div>
         </BrowserRouter>
-
     );
 }
